@@ -16,8 +16,7 @@ import typing
 from typing import List
 
 
-from utils import *
-
+from .utils import *
 
 # base class
 class OpticalComponent():
@@ -46,7 +45,7 @@ class FreeSpace(OpticalComponent):
     self.M = np.array([[1, d], [0, 1]])
     self.d = d
   def __repr__(self):
-    return f'FreeSpace(d={self.d})'
+    return f'FreeSpace(d={self.d}), hellohello'
 
 class ThinLens(OpticalComponent):
   def __init__(self, f):
@@ -143,7 +142,7 @@ class OpticalSystem(OpticalComponent):
     Return a stack of `n-1` ray transfer matrices for the part of the system between 
     `z1` and `z2`, `z2` and `z3`, ..., `z_{n-1}` and `z_n`.
     '''
-    z = self.n2a(z)
+    z = n2a(z)
     assert(len(z.shape) == 1 and len(z) >= 2)
     N_z = len(z)
     # Ensure z points are in the correct order
@@ -164,6 +163,7 @@ class OpticalSystem(OpticalComponent):
       z1 = z[i]
       z2 = z[i-1]
       z_curr = z1
+      M = np.eye(2)
       # for each component in [z1, z2):
       for i in range(len(components_in_range)):
         # propagate up to component from z_curr
@@ -228,7 +228,7 @@ class OpticalSystem(OpticalComponent):
     q0 = n2a(q0)
 
     # Get stack of matrices
-    M = self.get_matrix(z[:-1], z[1:])  # shape (N_z - 1, 2, 2)
+    M = self.get_matrix(z)  # shape (N_z - 1, 2, 2)
     
     # Pre-allocate q_z
     q_z = np.zeros_like((*q0.shape, M.shape[0]))
@@ -236,8 +236,6 @@ class OpticalSystem(OpticalComponent):
     # Fill in each q_z as we propagate
     for i in range(M.shape[0]):
       q_z[:,i] = self.apply(M[i], q)
-
-    breakpoint()
     
     q_z = np.zeros(q.shape)
 
