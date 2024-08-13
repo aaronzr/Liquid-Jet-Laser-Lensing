@@ -45,7 +45,7 @@ class FreeSpace(OpticalComponent):
     self.M = np.array([[1, d], [0, 1]])
     self.d = d
   def __repr__(self):
-    return f'FreeSpace(d={self.d}), hellohello'
+    return f'FreeSpace(d={self.d}), hellohellohello'
 
 class ThinLens(OpticalComponent):
   def __init__(self, f):
