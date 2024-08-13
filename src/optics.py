@@ -223,7 +223,7 @@ class OpticalSystem(OpticalComponent):
       q_z:  ndarray((N_q0, N_z - 1))
       
     '''
-    assert(z == sorted(z))
+    assert (z == sorted(z)).all()
 
     q0 = n2a(q0)
 
