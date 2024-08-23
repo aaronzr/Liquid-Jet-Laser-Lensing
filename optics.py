@@ -193,20 +193,23 @@ class OpticalSystem(OpticalComponent):
       if issubclass(type(component), Interface):
         self.n_list[z] = component.n2
 
-  def apply(self, matrix, q_value):
+  def apply(self, matrix, q0) -> np.ndarray:
     '''
     Apply the ray transfer `matrix` to the `q_value`.
 
     Params:
-      matrix:   ndarray((N_matrix, 2, 2))
-      q_value:  ndarray((N_q))
+      matrix:   ndarray((N_mat, 2, 2))
+        A stack of `N_mat` transfer matrices
+      q0:  ndarray((N_q))
+        An array of `N_q` initial q-values
+    
     Returns:
-      q_prime:  ndarray((N_q, N_matrix))
+      q_z:  ndarray((N_q, N_mat + 1))
+        A (N_q, N_mat + 1) matrix where each of the `N_q` q0 values has been 
+        propagated through the `N_mat` transfer matrices.
     '''
-    assert q_value.shape == matrix.shape[:-2] # N_q
-    # The "components" way.
     A, B, C, D = matrix[...,0,0], matrix[...,0,1], matrix[...,1,0], matrix[...,1,1] # shape: (N_q)
-    return (np.outer(q_value, A) + B) / (np.outer(q_value, C) + D)
+    return (np.outer(q0, A) + B) / (np.outer(q0, C) + D)
 
   def propagate(self, q0, z):
     '''
